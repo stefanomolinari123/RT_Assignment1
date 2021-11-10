@@ -7,9 +7,9 @@ The robot in the path must not collide with the walls, represented with the gold
 This program is based on the R.see method, which makes the robot do things written before.
 
 The program should be able to:
- -drives the robot around the circuit in the counter-clockwise direction;
- -make the robot avoid avoid the golden tokens, which constitute the 'walls' of the circuit;
- -drives the robot close to the closest silver box, it should grab it, and move it behind itself.
+ ◘drives the robot around the circuit in the counter-clockwise direction;
+ ◘make the robot avoid avoid the golden tokens, which constitute the 'walls' of the circuit;
+ ◘drives the robot close to the closest silver box, it should grab it, and move it behind itself.
 
  ![MicrosoftTeams-image](https://user-images.githubusercontent.com/62506638/141134541-16f0ce08-04f9-4e52-8af7-bfbed80f3cc0.png)
 
