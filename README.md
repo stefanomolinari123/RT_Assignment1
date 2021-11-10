@@ -2,7 +2,15 @@ Research Track1 - First Assignment
 ================================
 Stefano Molinari 4703592
 
-The first assignment consist in the development of a software program, written in python language, which drives the robot around the desired path
+The first assignment consist in the development of a software program, written in python language, which drives the robot around the desired path.
+The robot in the path must not collide with the walls, represented with the golden token, and must grab the silver token bringing them 180 degress behind.
+This program is based on the R.see method, which makes the robot do things written before.
+
+The program should be able to:
+ -drives the robot around the circuit in the counter-clockwise direction;
+ -make the robot avoid avoid the golden tokens, which constitute the 'walls' of the circuit;
+ -drives the robot close to the closest silver box, it should grab it, and move it behind itself.
+ 
 
 Installing and running
 ----------------------
