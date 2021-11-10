@@ -129,3 +129,142 @@ def find_token():
 ### Find_Silver_Token function ###
 
 The 'find_silver_token' searching only for silver tokens and returns the value of distance and angle of the closest one. 
+It is used for refresh, at every iteration of the while of the 'take_silver_token', the distance and the angle between the robot and the closest silver token. In fact, this function calculates the distance and the angle only for the silver token. 
+This function has no parameter passed.
+
+```python
+def find_silver_token():
+    dist=100
+    for token in R.see():
+        if token.dist < dist and token.info.marker_type is MARKER_TOKEN_SILVER and -90 < token.rot_y < 90:
+            dist=token.dist
+            rot_y=token.rot_y
+    if dist==100:
+            return -1, -1
+    else:
+    return dist, rot_y
+```
+### Find_Golden_Token function ###
+
+The 'find_golden_token' searching only for the golden tokens and returns only the value of the distance of the closest one. 
+It is used for refresh, at every iteration of the whiles of the 'avoid_collision', the distance of the closest golden token after the turn to have a control if the turn was enough. 
+This function calculate only the distance of the closest golden token.
+This function has no parameter passed.
+
+```python
+def find_golden_token():
+    dist=100
+    for token in R.see():
+        if token.dist < dist and token.info.marker_type is MARKER_TOKEN_GOLD and -45 < token.rot_y < 45:
+            dist=token.dist
+    if dist==100:
+         return -1
+    else:
+         return dist
+```
+
+### Find_Golden_Token_Right function ###
+
+The 'find_golden_token_right' is used for avoids the collisions between the robot and the walls of the circuit, represented by the golden tokens.
+This function calculate (and returns to 'avoid_collision') the value of the distance of the closest golden token at the right of the robot. 
+This function has no parameter passed.
+
+```python 
+def find_golden_token_right():
+    dist=100
+    for token in R.see():
+        if token.dist < dist and token.info.marker_type is MARKER_TOKEN_GOLD and 75 < token.rot_y < 105:
+            dist=token.dist
+    if dist==100:
+        return -1
+    else:
+        return dist
+```
+
+### Find_Golden_Token_Left function ###
+
+The 'find_golden_token_left' is used for avoids the collisions between the robot and the walls of the circuit, represented by the golden tokens.
+This function calculate (and returns to 'avoid_collision') the value of the distance of the closest golden token at the left of the robot. 
+This function has no parameter passed.
+
+```python 
+def find_golden_token_left():
+    dist=100
+    for token in R.see():
+        if token.dist < dist and token.info.marker_type is MARKER_TOKEN_GOLD and -105 < token.rot_y < -75:
+            dist=token.dist
+    if dist==100:
+        return -1
+    else:
+        return dist
+```
+
+### Avoid_Collision function ###
+
+The 'avoid_collision' function is used for avoid the collisions between the robot and the walls of the circuit, represented by the golden tokens. 
+In it we check if the distance of the robot and the golden token is greater of a certain threshold(m_th). If this is verificated the robot can go forward, otherwise, if this isn't verificated the robot has to turn. The part where the robot has to turn is determinated by the farest wall, calculated thanks to 'find_golden_token_left' and 'find_golden_token_right'. When the distance of the robot from the closest golden token is bigger than the threshold it stops its turning and return to go forward until it will be too close to a golden token.
+This function has only one parameter passed: the distance of the closest token (it will be refreshed after every iteraction of the whiles)
+
+```python
+def avoid_collision(dist): 
+ if dist < m_th: # if we are too close to the wall we have to turn
+  dist_R = find_golden_token_right() # value of distance and angle to the closest token on the right.
+  dist_L = find_golden_token_left() # value of distance and angle to the closest token on the left.
+  print("The value of the right distance is:", dist_R, "the value of the left distance is:", dist_L) 
+  if dist_R > dist_L: # if the right wall is further away than the left one we have to turn right.
+   while dist < m_th:
+    print("Turn right")
+    turn(5,0.5)
+    dist = find_golden_token()
+  else:              # if the right wall is closer than the left one we have to turn left.
+   while dist < m_th:
+    print("Turn left")
+    turn(-5,0.5)
+    dist = find_golden_token()
+ else:           # else if we are not too close to the wall we can go forward.
+  drive(20,1) 
+  print("Go forward!")
+```
+
+### Take_Silver_Token function ###
+
+The 'take_silver_token' it used for grabbing the silver token.
+If the robot is farest than the threshold(d_th) from the silver token, it have to reach that. If the robot and the token are well aligned the robot has only to go forward until it reaches the silver token; otherwise, if the robot are bad aligned the robot before go forward has to turn until the alignment is good. 
+When the robot reaches the silver token with a good alignment the robot has to grab it and turn it 180 degrees behind. When the robot grabs the token it checks if the right wall is too close for the turn and if isn't the robot can turn right for bringing the silver token 180 degrees behind; otherwise, if the wall is close the robot turns left for bringing the silver token 180 degrees behind. After bringing the silver token 180 degrees behind, the robot releases the token and returns (with a turn with the same velocity, with the opposite sign, and for the same time, to the previous turn) on the path taken previously (the counterwiseclock path).
+This function has no parameter passed.
+
+```python
+def take_silver_token():
+    while True:
+         dist, rot_y = find_silver_token() # after each iteraction we calculate the values of distance and angle between the                                               robot                                              and the silver token
+     if dist < d_th:  # when the robot is close to the silver token
+  print("Found it!") 
+  if R.grab(): # if we are close to the token, we grab it. 
+   dist_R = find_golden_token_right()
+   dist_L = find_golden_token_left()
+   print("Gotcha!")
+   if dist_R < m_th:  # if the silver token is close to the right wall it turns left
+    turn(-20, 3) # put the token 180 degrees behind
+    print("Release the silver token") 
+    R.release()
+    drive(-10,1.5) 
+    turn(20, 3) # the robot returns to the path taken previously
+   else:               # else the distance between the robot and the wall is greater than the thresold we                can turn right
+    turn (20,3)
+    print("Release the silver token")
+    R.release()
+    drive(-10,1.5)
+    turn(-20,3)
+   return # after the grab part exit from this function
+     elif dist >= d_th:
+  if -a_th<= rot_y <= a_th: # if the robot is well aligned with the token, we go forward 
+      print("Ah, here we are!.") 
+      drive(20, 0.1) 
+  elif rot_y < -a_th: # if the robot is not well aligned with the token, we move it on the left or on the right 
+      print("Left a bit...") 
+      turn(-1, 0.5) 
+  elif rot_y > a_th: 
+      print("Right a bit...") 
+      turn(+1, 0.5)
+```
+
