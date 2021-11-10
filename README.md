@@ -1,8 +1,8 @@
-Python Robotics Simulator
+Research Track1 - First Assignment
 ================================
+Stefano Molinari 4703592
 
-This is a simple, portable robot simulator developed by [Student Robotics](https://studentrobotics.org).
-Some of the arenas and the exercises have been modified for the Research Track I course
+The first assignment consist in the development of a software program, written in python language, which drives the robot around the desired path
 
 Installing and running
 ----------------------
