@@ -14,46 +14,23 @@ The program should be able to:
  ![MicrosoftTeams-image](https://user-images.githubusercontent.com/62506638/141134541-16f0ce08-04f9-4e52-8af7-bfbed80f3cc0.png)
 
 
-Installing and running
+Running 
 ----------------------
 
 The simulator requires a Python 2.7 installation, the [pygame](http://pygame.org/) library, [PyPyBox2D](https://pypi.python.org/pypi/pypybox2d/2.1-r331), and [PyYAML](https://pypi.python.org/pypi/PyYAML/).
 
-Pygame, unfortunately, can be tricky (though [not impossible](http://askubuntu.com/q/312767)) to install in virtual environments. If you are using `pip`, you might try `pip install hg+https://bitbucket.org/pygame/pygame`, or you could use your operating system's package manager. Windows users could use [Portable Python](http://portablepython.com/). PyPyBox2D and PyYAML are more forgiving, and should install just fine using `pip` or `easy_install`.
-
-## Troubleshooting
-
-When running `python run.py <file>`, you may be presented with an error: `ImportError: No module named 'robot'`. This may be due to a conflict between sr.tools and sr.robot. To resolve, symlink simulator/sr/robot to the location of sr.tools.
-
-On Ubuntu, this can be accomplished by:
-* Find the location of srtools: `pip show sr.tools`
-* Get the location. In my case this was `/usr/local/lib/python2.7/dist-packages`
-* Create symlink: `ln -s path/to/simulator/sr/robot /usr/local/lib/python2.7/dist-packages/sr/`
-
-## Exercise
------------------------------
-
-To run one or more scripts in the simulator, use `run.py`, passing it the file names. 
-
-I am proposing you three exercises, with an increasing level of difficulty.
-The instruction for the three exercises can be found inside the .py files (exercise1.py, exercise2.py, exercise3.py).
-
-When done, you can run the program with:
+To run this script in the simulator, use `run.py`, passing it the file names. 
 
 ```bash
-$ python run.py exercise1.py
+$ python run.py assignment.py
 ```
 
-You have also the solutions of the exercises (folder solutions)
-
-```bash
-$ python run.py solutions/exercise1_solution.py
-```
-
-Robot API
+Robot Behaviour
 ---------
 
-The API for controlling a simulated robot is designed to be as similar as possible to the [SR API][sr-api].
+After running the script, the robot and arena will appear you in a enviroment pre-build in which the robot, thanks to the color code of the token, can distinguish the color of the token (in our case we have only two different possible color of the tokens: silver and golden). Also the robot is generated after the running of the script, and begins its counterclockwise drives detecting the distance and  the angle between them and the closest token, in addition to the color of it. Now, the robot, following the closest token color knows how to behave. In fact, if the color of the closest token is golden, it compare the distance from it and if this distance is greater than a certain threshold (fixed in this program at 0.8) it goes forward. When the distance from the golden token falls down the threshold, it turns, so as to avoid the collision with the token/wall. When the robot detects a silver token, it has to align with this. After this alignment the robot has to reach (very close) the silver token and grab it. After the grab the robot has to turn the token 180 degress behind and after release them, returning to the path takes before the grabbing, in order to continue its counterclockwise path.
+
+[VIDEO COMPORTAMENTO]
 
 ### Motors ###
 
@@ -113,3 +90,42 @@ for m in markers:
 ```
 
 [sr-api]: https://studentrobotics.org/docs/programming/sr/
+
+### Software Architecture ###
+### ----------------------- ###
+
+For this script I have implemented 9 different functions, beyond function main().
+Now I explain in few lines each function.
+
+### Drive function ###
+
+The drive function is used to set the linear velocity of the robot. This function used two motors of the class Robot, and sets to each one the same velocity (chosen by the programmer) and a time of use, expressed in second. For the establish time the robot goes forward and after this the robot stops.
+This function has two parameters: speed [int] and seconds(time) [int].
+
+### Turn function ###
+
+The turn function is used to make the robot turns. This function used the same two motors of the previous analyzed function, but in this case one of this motors is set with a positive velocity and the other one with the same velocity but negative (the moduls of the two velocity is the same, only the sign of that is negative). Also in this function the time of use must be set.
+Thanks to this function the programmer can make the robot turns to left or right as desired.
+This function has two parameters: speed [int] and seconds(time) [time].
+
+### Find_Token function ###
+
+With the 'find_token' function the robot can sees every token in the arena but returns only the value of the closest one. The values returned are the distance and the angle from it, in addition to the color of the token. This is used in the main for calls the right function if the color of the closest token is silver or golden.
+In case of a silver token the robot has to reach them and grab it, in the other case (golden token) the robot has to avoid the collision with it.
+
+```python
+def find_token():
+    dist=100
+    for token in R.see():
+        if token.dist < dist and -60 < token.rot_y < 60:
+            dist=token.dist
+            rot_y=token.rot_y
+         token_color=token.info.marker_type 
+    if dist==100:
+ return -1, -1, -1
+    else:
+     return dist, rot_y, token_color
+```
+### Find_Silver_Token function ###
+
+The 'find_silver_token' searching only for silver tokens and returns the value of distance and angle of the closest one. 
