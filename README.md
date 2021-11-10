@@ -27,7 +27,7 @@ The simulator requires a Python 2.7 installation, the [pygame](http://pygame.org
 To run this script in the simulator, use `run.py`, passing it the file names. 
 
 ```bash
-$ python run.py assignment.py
+$ python2 run.py assignment.py
 ```
 
 Robot Behaviour
@@ -105,17 +105,21 @@ Now I explain in few lines each function.
 ### Drive function ###
 
 The drive function is used to set the linear velocity of the robot. This function used two motors of the class Robot, and sets to each one the same velocity (chosen by the programmer) and a time of use, expressed in second. For the establish time the robot goes forward and after this the robot stops.
+
 This function has two parameters: speed [int] and seconds(time) [int].
 
 ### Turn function ###
 
 The turn function is used to make the robot turns. This function used the same two motors of the previous analyzed function, but in this case one of this motors is set with a positive velocity and the other one with the same velocity but negative (the moduls of the two velocity is the same, only the sign of that is negative). Also in this function the time of use must be set.
+
 Thanks to this function the programmer can make the robot turns to left or right as desired.
+
 This function has two parameters: speed [int] and seconds(time) [time].
 
 ### Find_Token function ###
 
 With the 'find_token' function the robot can sees every token in the arena but returns only the value of the closest one. The values returned are the distance and the angle from it, in addition to the color of the token. This is used in the main for calls the right function if the color of the closest token is silver or golden.
+
 In case of a silver token the robot has to reach them and grab it, in the other case (golden token) the robot has to avoid the collision with it.
 
 ```python
@@ -134,7 +138,9 @@ def find_token():
 ### Find_Silver_Token function ###
 
 The 'find_silver_token' searching only for silver tokens and returns the value of distance and angle of the closest one. 
+
 It is used for refresh, at every iteration of the while of the 'take_silver_token', the distance and the angle between the robot and the closest silver token. In fact, this function calculates the distance and the angle only for the silver token. 
+
 This function has no parameter passed.
 
 ```python
@@ -152,8 +158,11 @@ def find_silver_token():
 ### Find_Golden_Token function ###
 
 The 'find_golden_token' searching only for the golden tokens and returns only the value of the distance of the closest one. 
+
 It is used for refresh, at every iteration of the whiles of the 'avoid_collision', the distance of the closest golden token after the turn to have a control if the turn was enough. 
+
 This function calculate only the distance of the closest golden token.
+
 This function has no parameter passed.
 
 ```python
@@ -171,7 +180,9 @@ def find_golden_token():
 ### Find_Golden_Token_Right function ###
 
 The 'find_golden_token_right' is used for avoids the collisions between the robot and the walls of the circuit, represented by the golden tokens.
+
 This function calculate (and returns to 'avoid_collision') the value of the distance of the closest golden token at the right of the robot. 
+
 This function has no parameter passed.
 
 ```python 
@@ -189,7 +200,9 @@ def find_golden_token_right():
 ### Find_Golden_Token_Left function ###
 
 The 'find_golden_token_left' is used for avoids the collisions between the robot and the walls of the circuit, represented by the golden tokens.
+
 This function calculate (and returns to 'avoid_collision') the value of the distance of the closest golden token at the left of the robot. 
+
 This function has no parameter passed.
 
 ```python 
@@ -207,7 +220,9 @@ def find_golden_token_left():
 ### Avoid_Collision function ###
 
 The 'avoid_collision' function is used for avoid the collisions between the robot and the walls of the circuit, represented by the golden tokens. 
+
 In it we check if the distance of the robot and the golden token is greater of a certain threshold(m_th). If this is verificated the robot can go forward, otherwise, if this isn't verificated the robot has to turn. The part where the robot has to turn is determinated by the farest wall, calculated thanks to 'find_golden_token_left' and 'find_golden_token_right'. When the distance of the robot from the closest golden token is bigger than the threshold it stops its turning and return to go forward until it will be too close to a golden token.
+
 This function has only one parameter passed: the distance of the closest token (it will be refreshed after every iteraction of the whiles)
 
 ```python
@@ -234,8 +249,11 @@ def avoid_collision(dist):
 ### Take_Silver_Token function ###
 
 The 'take_silver_token' it used for grabbing the silver token.
+
 If the robot is farest than the threshold(d_th) from the silver token, it have to reach that. If the robot and the token are well aligned the robot has only to go forward until it reaches the silver token; otherwise, if the robot are bad aligned the robot before go forward has to turn until the alignment is good. 
+
 When the robot reaches the silver token with a good alignment the robot has to grab it and turn it 180 degrees behind. When the robot grabs the token it checks if the right wall is too close for the turn and if isn't the robot can turn right for bringing the silver token 180 degrees behind; otherwise, if the wall is close the robot turns left for bringing the silver token 180 degrees behind. After bringing the silver token 180 degrees behind, the robot releases the token and returns (with a turn with the same velocity, with the opposite sign, and for the same time, to the previous turn) on the path taken previously (the counterwiseclock path).
+
 This function has no parameter passed.
 
 ```python
