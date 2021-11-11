@@ -292,7 +292,7 @@ def take_silver_token():
 ```
 
 ### Main Function ###
-
+```python
 def main():
  while True:
      dist, rot_y, token_color = find_token() # gets the value of the distance and the angle between the robot and                                    the closest token and also its colour.
@@ -302,7 +302,7 @@ def main():
    
     elif token_color is MARKER_TOKEN_SILVER: # otherwise if the token is silver we have to call the function that
            take_silver_token()              # makes the robot grab it and turns it 180 degrees behind              
-
+```
 ### Pseudocode ###
 
 ```python
