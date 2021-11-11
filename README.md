@@ -335,12 +335,17 @@ while true:
                     drive until the robot reaches that
                     print "Ah, he we are!"
           else 
-                    if the robot is misaligned to the left
+                    if the robot is not well aligned to the left
                            turn right
                            print "Turn right a bit..."
-                    else (the robot is misaligned to the right)
+                    else (the robot is not well aligned to the right)
                            turn left
                            print "Turn left a bit.."
 ```
 
+### Possible Future Developments ###
+
+The implemented code to make the robot doing what we desired works for most of time, but, rarely, the robot turns in the wrong direction and doesn't continue the correct path. 
+This is due to the fact that in some vertices the distance wall is not well calculated and so the robot turns in the wrong direction.
+With a possible other, more complex program than this, in which will be done more controls on the path take by the robot, this rare bug can be fixed. 
 
