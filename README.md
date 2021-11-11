@@ -241,7 +241,7 @@ def avoid_collision(dist):
           print("Turn left")
           turn(-5,0.5)
           dist = find_golden_token()
-  else:           # else if we are not too close to the wall we can go forward.
+  else:           # else if the robot is not close enough to the wall it can go forward.
           drive(20,1) 
           print("Go forward!")
 ```
@@ -272,7 +272,7 @@ def take_silver_token():
                         R.release()
                         drive(-10,1.5) 
                         turn(20, 3) # the robot returns to the path taken previously
-                 else:               # else the distance between the robot and the wall is greater than the thresold wecan turn right
+                 else:               # if the distance between the robot and the wall is greater than the thresold we can turn right
                         turn (20,3)
                         print("Release the silver token")
                         R.release()
@@ -290,55 +290,67 @@ def take_silver_token():
                  print("Right a bit...") 
                  turn(+1, 0.5)
 ```
+
+### Main Function ###
+
+def main():
+ while True:
+     dist, rot_y, token_color = find_token() # gets the value of the distance and the angle between the robot and                                    the closest token and also its colour.
+  
+     if token_color is MARKER_TOKEN_GOLD: # if the token is golden we have to call the function to avoid collisions
+           avoid_collision(dist)         # beetween the robot and these tokens.
+   
+    elif token_color is MARKER_TOKEN_SILVER: # otherwise if the token is silver we have to call the function that
+           take_silver_token()              # makes the robot grab it and turns it 180 degrees behind              
+
 ### Pseudocode ###
 
 ```python
-while true:
+while true
 
- find the closest token and calculate its distance, angle and color
+     find the closest token and calculate the distance, angle and color
  
- if the token color is golden
+     if the token color is golden
+           if the robot and the token are close
+                 calculate the distance of the right and left wall 
+                 print "The right distance is (distR) and the left distance is (distL)"
+                 if the right distance is greater than the left one
+                            turn right until the distance of the robot from the wall is greater than the threshold
+                 else
+                            turn left until the distance of the robot from the wall is greater than the threshold
+           else
+                 drive forward
+   
+     if the token color is silver
  
-     if the robot and the token are close
-        update the distance of the right and left walls
-        print "The right distance is (distR) and the left distance is (distL)
-        if the right distance is greater than the left one
-             turn right until the distance of the robot from the wall is greater than the threshold
-        else
-             turn left until the distance of the robot from the wall is greater than the threshold
-     else
-        drive forward
-
- if the token color is silver
- 
-   while true:
-     refresh the coordinates of distance and angle of the silver token
-     if distance is lower than the threshold
-         print "Found it!"
-         if the robot has grabbed the token
-             print "Gotcha"
-             calculate the distances of right and left wall
-             if the robot is close to the right walls
-                    turn left for bringing the token 180 degress behind
-                    release the token
-                    drive behind
-                    turn right for retake the previous path
-             else
-                    turn right for bringing the token 180 degrees behind
-                    release the token
-                    drive behind
-                    turn right for retake the previous path
-   else
-          if the robot is well aligned with the silver token
-                    drive until the robot reaches that
-                    print "Ah, he we are!"
-          else 
-                    if the robot is not well aligned to the left
-                           turn right
-                           print "Turn right a bit..."
-                    else (the robot is not well aligned to the right)
-                           turn left
-                           print "Turn left a bit.."
+            while true
+                 update the coordinates of distance and angle of the silver token
+                 if distance is lower than the threshold
+                             print "Found it!"
+                             when the robot now has grabbed the token
+                                      print "Gotcha"
+                                      calculate the distances of right and left wall
+                                      if the robot is close to the right walls
+                                                   turn left to bring the token 180 degrees behind
+                                                   release the token
+                                                   drive behind
+                                                   turn right to retake the previous path
+                                     else
+                                                   turn right to bring the token 180 degrees behind
+                                                   release the token
+                                                   drive behind
+                                                   turn right to retake the previous path
+                 else
+                           if the robot is well aligned with the silver token
+                                           drive until the robot reaches that
+                                           print "Ah, he we are!"
+                           else 
+                                          if the robot is misaligned to the left
+                                                 turn right
+                                                 print "Turn right a bit..."
+                                          else (the robot is misaligned to the right)
+                                                 turn left
+                                                 print "Turn left a bit.."
 ```
 
 ### Possible Future Developments ###
