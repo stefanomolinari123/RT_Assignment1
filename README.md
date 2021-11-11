@@ -31,7 +31,7 @@ $ python2 run.py assignment.py
 ```
 
 Robot Behaviour
----------
+----------------------
 
 After running the script, the robot and arena will appear to you in a enviroment pre-built, in which the robot, thanks to the color code of the token, can distinguish the color of the token (in our case we only have two differents possible color of the tokens: silver and gold). Also the robot is generated after the running of the script, and it begins its counterclock-wise drives, detecting the distance and  the angle between them and the closest token, in addition to the color of it. Now, the robot, being aware of the closest token's color knows how to behave. In fact, if the color of the closest token is golden, the robot knows the distance from it and if this distance is greater than a certain threshold (fixed in this program at 0.8) it goes forward. When the distance from the golden token falls down the threshold, the robot turns around, so as to avoid the collision with the token/wall. When the robot detects a silver token, it has to align with this. After the alignment the robot has to reach (very close) the silver token and grab it. After grabbing the token, the robot has to turn the token 180 degress behind and after release them, returning to the path takes before the grabbing, in order to continue its counterclockwise path.
 
@@ -97,7 +97,7 @@ for m in markers:
 [sr-api]: https://studentrobotics.org/docs/programming/sr/
 
 ### Software Architecture ###
-### ----------------------- ###
+----------------------
 
 For this script I have implemented 9 different functions, beyond the main function.
 Now I explain in few lines each function.
@@ -344,6 +344,7 @@ while true:
 ```
 
 ### Possible Future Developments ###
+----------------------
 
 The implemented code to make the robot doing what we desired works for most of time, but, rarely, the robot turns in the wrong direction and doesn't continue the correct path. 
 This is due to the fact that in some vertices the distance wall is not well calculated and so the robot turns in the wrong direction.
