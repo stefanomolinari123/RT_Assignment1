@@ -43,7 +43,7 @@ def turn(speed, seconds):
     
 def find_token():
     """
-    Function for finding the closest token.
+    Function to find the closest token.
 
     Returns:
     	-dist(float): the value of the distance of the closest token [-1 if no token are finding];
@@ -65,7 +65,7 @@ def find_token():
    	
 def find_silver_token():
     """
-    Function, similar to the 'find_token', which returns the same value of the previous function, except the colour of the      	 token. Infact, in this function, we are searching only silver token.
+    Function, similar to the 'find_token', which returns the same value of the previous function, excepts for the colour of    	the token. Infact, in this function, we are searching only for silver token.
     Tokens are searched only in the semi-plane in front of the robot (-90 < token.rot_y < 90)
     """
     
@@ -81,7 +81,7 @@ def find_silver_token():
    	
 def find_golden_token():
     """
-    Function indentical to the 'find_silver_token', excepts the fact that the sought token now are golden. 
+    Function indentical to the 'find_silver_token', excepts for the fact that the sought token now are golden. 
     Also in this case the tokens are searched only in the semi-plane in front of the robot (-90 < token.rot_y < 90).
     """
     
@@ -94,9 +94,9 @@ def find_golden_token():
     else:
    	return dist
    		
-def find_golden_token_right():
+def dist_wall_right():
     """
-    Useful function to avoid the collisions with the walls of the arena. It is called when the front distance between the      	robot and the wall falls below a certain threshold.
+    Useful function to avoid the collisions with the walls of the arena. It is called when the front distance between the      	robot and the wall falls below a certain threshold (fixed at 0.8).
     
     Returns:
     	-dist(float): distance between the robot and the closest golden token on the right [-1 if no token are finding];
@@ -112,12 +112,12 @@ def find_golden_token_right():
     else:
    	return dist
    	
-def find_golden_token_left():
+def dist_wall_left():
     """
     Useful function to avoid the collisions with the walls of the arena. It is called when the front distance between the      	robot and the wall falls below a certain threshold. 
     
     Returns:
-    	-dist(float): distance between the robot and the closest golden token on the left [-1 if no token are finding];
+    	-dist(float): distance between the robot and the closest golden token/wall on the left [-1 if no token are finding];
     [Values are calculated with -105 < token.rot_y < -75].
     """
     
@@ -132,42 +132,44 @@ def find_golden_token_left():
    	
 def avoid_collision(dist):	
 	"""
-	Function useful for avoid the collisions between the robot and the wall of the arena and also to rightly follow the 	path desired. It use the function 'find_golden_token_left' and 'find_golden_token_right' to choose the right direction 		to turn (the robot turns to the side where the distance (between right and left) obtained from the two functions is 	greater) when the distance between the robot and the wall falls under the threshold (0.8).
-	If the distance between the robot and the wall is greater than the threshold, the robot go forward.
+	Function useful to avoid the collisions between the robot and the wall of the arena and also to rightly follow the
+	path desired. It uses the function 'dist_wall_left' and 'dist_wall_right' to choose the right direction to turn (the 	 robot turns to the side where the distance (between right and left) obtained from the two functions is greater) when 
+	the distance between the robot and the wall falls under the threshold (0.8).
+	If the distance between the robot and the wall is greater than the threshold, the robot goes forward.
 	
 	"""
-	dist_R = find_golden_token_right() # value of distance and angle to the closest token on the right.
-	dist_L = find_golden_token_left() # value of distance and angle to the closest token on the left.
+	dist_R = dist_wall_right() # value of distance and angle to the closest token on the right.
+	dist_L = dist_wall_left() # value of distance and angle to the closest token on the left.
 	
 	if dist < m_th: # if we are too close to the wall we have to turn
 		print("The value of the right distance is:", dist_R, "the value of the left distance is:", dist_L) 
-		if dist_R > dist_L: # if the right wall is further away than the left one we have to turn right.
+		if dist_R > dist_L: # if the right wall is further away than the left one the robot has to turn right.
 			while dist < m_th:
 				print("Turn right")
 				turn(5,0.5)
 				dist = find_golden_token()
-		else: 	            # if the right wall is closer than the left one we have to turn left.
+		else: 	            # if the right wall is closer than the left one the robot has to turn left.
 			while dist < m_th:
 				print("Turn left")
 				turn(-5,0.5)
 				dist = find_golden_token()
-	else:           # else if we are not too close to the wall we can go forward.
+	else:           # else if the robot is not close enough to the wall it can go forward.
 		drive(20,1) 
 		print("Go forward!")
 		
 def take_silver_token():
     """
-    Function for bring the silver token 180 degrees behind.
+    Function to bring the silver token 180 degrees behind.
     """
     while True:
     	    dist, rot_y = find_silver_token() # after each iteraction we calculate the values of distance and angle between the 	                                             robot and the silver token
 	    if dist < d_th:  # when the robot is close to the silver token
 		print("Found it!") 
 		if R.grab(): # if we are close to the token, we grab it. 
-			dist_R = find_golden_token_right()
-			dist_L = find_golden_token_left()
+			dist_R = dist_wall__right()
+			dist_L = dist_wall_left()
 			print("Gotcha!")
-			if dist_R < m_th:  # if the silver token is close to the wall it turns left
+			if dist_R < m_th:  # if the silver token is close to the wall the robot turns left
 				turn(-20, 3) # put the token 180 degrees behind
 				print("Release the silver token") 
 				R.release()
@@ -197,13 +199,13 @@ def main():
 	The program goes on until an interrupt by keyboard.
 	"""
 	while True:
-		dist, rot_y, token_color = find_token() # gets the value of the distance and the angle between the robot and    					                     the closest token and also its colour.
+		dist, rot_y, token_color = find_token() # gets the value of the distance and the angle between the robot and    					                           the closest token and also its colour.
 		
-		if token_color is MARKER_TOKEN_GOLD: # if the token is golden we have call the function that avoids collisions
+		if token_color is MARKER_TOKEN_GOLD: # if the token is golden we have to call the function to avoid collisions
 			avoid_collision(dist)         # beetween the robot and these tokens.
 			
-		elif token_color is MARKER_TOKEN_SILVER: # otherwise if the token is silver we have call the function that
- 		        take_silver_token()               # grab it and turns it 180 degrees behind              
+		elif token_color is MARKER_TOKEN_SILVER: # otherwise if the token is silver we have to call the function that
+ 		        take_silver_token()              # makes the robot grab it and turns it 180 degrees behind              
 			
 
 main()
